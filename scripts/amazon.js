@@ -1,4 +1,5 @@
 let productsHTML='';
+let timeoutId;
 products.forEach((product)=>{
     productsHTML+=`
       <div class="product-container">
@@ -24,7 +25,7 @@ products.forEach((product)=>{
           </div>
 
           <div class="product-quantity-container">
-            <select>
+            <select class="js-quantity-selector-${product.id}">
               <option selected value="1">1</option>
               <option value="2">2</option>
               <option value="3">3</option>
@@ -40,7 +41,7 @@ products.forEach((product)=>{
 
           <div class="product-spacer"></div>
 
-          <div class="added-to-cart">
+          <div class="added-to-cart js-added-to-cart-${product.id} ">
             <img src="images/icons/checkmark.png">
             Added
           </div>
@@ -59,6 +60,9 @@ document.querySelector('.js-products-grid').innerHTML=productsHTML
 document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
     button.addEventListener('click',()=>{
         const productId=button.dataset.productId;
+        const quantity=parseInt(document.querySelector(`.js-quantity-selector-${productId}`).value);
+
+    
         let matchingItem;
         cart.forEach((item)=>{
             if(item.productId===productId){
@@ -67,7 +71,7 @@ document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
         });
 
         if(matchingItem){
-            matchingItem.quantity+=1;
+            matchingItem.quantity+=quantity;
         }else{
     
         cart.push({
@@ -81,8 +85,22 @@ document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
             cartQuantity+=item.quantity;
         });
 
-        document.querySelector('.js-cart-quantity').innerHTML=`${cartQuantity}`
-    });
+        document.querySelector('.js-cart-quantity').innerHTML=`${cartQuantity}`;
 
+        const addToCartButton=document.querySelector(`.js-added-to-cart-${productId}`);
+        addToCartButton.classList.add('added-to-cart-message');
+         // Remove it after 2 seconds
 
+        clearTimeout(timeoutId);
+        timeoutId=setTimeout(() => {
+          addedMessage.classList.remove('added-to-cart-message');
+        }, 2000);
+
+            
+        });
+
+  
 });
+
+ console.log(cart);
+
