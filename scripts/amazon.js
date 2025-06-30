@@ -1,3 +1,6 @@
+import {cart,addToCart} from '../data/cart.js'
+import {products} from '../data/products.js'
+
 let productsHTML='';
 let timeoutId;
 products.forEach((product)=>{
@@ -57,43 +60,36 @@ products.forEach((product)=>{
 
 document.querySelector('.js-products-grid').innerHTML=productsHTML
 
+function updateCartQuantity(){
+    let cartQuantity=0
+    cart.forEach((cartItem)=>{
+        cartQuantity+=cartItem.quantity;
+    });
+
+    document.querySelector('.js-cart-quantity').innerHTML=`${cartQuantity}`;
+
+}
+
 document.querySelectorAll('.js-add-to-cart').forEach((button)=>{
     button.addEventListener('click',()=>{
         const productId=button.dataset.productId;
-        const quantity=parseInt(document.querySelector(`.js-quantity-selector-${productId}`).value);
+        //const quantity=parseInt(document.querySelector(`.js-quantity-selector-${productId}`).value);
+        addToCart(productId);
+        updateCartQuantity();
 
     
-        let matchingItem;
-        cart.forEach((item)=>{
-            if(item.productId===productId){
-               matchingItem=item;
-            }
-        });
-
-        if(matchingItem){
-            matchingItem.quantity+=quantity;
-        }else{
-    
-        cart.push({
-            productId:productId,
-            quantity:1
-        });
-        }
-        
-        let cartQuantity=0
-        cart.forEach((item)=>{
-            cartQuantity+=item.quantity;
-        });
+       
+       
 
         document.querySelector('.js-cart-quantity').innerHTML=`${cartQuantity}`;
 
-        const addToCartButton=document.querySelector(`.js-added-to-cart-${productId}`);
-        addToCartButton.classList.add('added-to-cart-message');
+        const addToCartMessage=document.querySelector(`.js-added-to-cart-${productId}`);
+        addToCartMessage.classList.add('added-to-cart-message');
          // Remove it after 2 seconds
 
         clearTimeout(timeoutId);
         timeoutId=setTimeout(() => {
-          addedMessage.classList.remove('added-to-cart-message');
+          addToCartMessage.classList.remove('added-to-cart-message');
         }, 2000);
 
             
